@@ -64,6 +64,8 @@
   .copertina { aspect-ratio: 2 / 3; width: 100%; object-fit: cover; display: block; box-shadow: 6px 6px 0 var(--pietra); }
   .copertina-vuota { display: flex; flex-direction: column; justify-content: space-between; padding: 1.2rem 1rem; background: var(--sangue); font: 1.35rem/1.15 var(--display); }
   .copertina-vuota small { font: italic 0.85rem var(--testo); opacity: .75; }
+  .libro .genere { margin-top: 0.9rem; font-size: 0.85rem; color: var(--ottone); letter-spacing: 0.04em; }
+  .libro .genere + h3 { margin-top: 0.1rem; }
   .libro h3 { font: 500 1.05rem/1.3 var(--testo); margin-top: 1rem; }
   .libro .dati { font-size: 0.9rem; color: var(--cenere); }
   .voto { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--cenere); margin-top: 0.3rem; }
@@ -180,8 +182,7 @@
 
   <header>
     <!-- FOTO: carica il file come assets/foto.jpg. Finché manca, compaiono le iniziali. -->
-    <img class="foto" src="assets/foto.jpg" alt="Simone Fiocco"
-         onerror="this.outerHTML='<div class=&quot;foto foto-vuota&quot; role=&quot;img&quot; aria-label=&quot;Simone Fiocco&quot;>SF</div>'">
+    <img class="foto" id="foto-autore" src="assets/foto.jpg" alt="Simone Fiocco">
     <h1>Simone <span>Fiocco</span></h1>
     <p class="ruolo">Scrittore e sceneggiatore</p>
     <div class="bio">
@@ -230,6 +231,8 @@
 <script>
 /* ==================================================================
    1. LIBRI
+   - genere: compare sotto la copertina (Horror, Thriller, Narrativa…).
+   - I libri compaiono nell'ordine in cui sono scritti qui.
    - tipo: "romanzo" oppure "altro" (antologie, riviste, fumetti):
      decide in quale delle due sezioni compare.
    - contenuto: per le antologie, il titolo del tuo racconto o della tua storia.
@@ -241,10 +244,11 @@
    Le voci con "DA COMPLETARE" aspettano editore, anno o link.
    ================================================================== */
 const libri = [
-  // ----- Romanzi -----
+  // ----- Romanzi (compaiono in questo ordine) -----
   {
     tipo: "romanzo",
     titolo: "Filari di sangue",
+    genere: "Horror",
     anno: "2025",
     editore: "Indipendente, illustrazioni di Antonio Cella",
     copertina: "assets/filari-di-sangue.jpg",
@@ -256,6 +260,7 @@ const libri = [
   {
     tipo: "romanzo",
     titolo: "Sara",
+    genere: "",            // DA COMPLETARE
     anno: "2026",
     editore: "Indipendente, illustrazioni di Antonio Cella",
     copertina: "assets/sara.jpg",
@@ -267,6 +272,7 @@ const libri = [
   {
     tipo: "romanzo",
     titolo: "Un male necessario",
+    genere: "Thriller",
     anno: "2025",
     editore: "Delos Digital, collana Delos Crime",
     copertina: "assets/un-male-necessario.jpg",
@@ -277,18 +283,8 @@ const libri = [
   },
   {
     tipo: "romanzo",
-    titolo: "Lo scettro di Priamo",
-    anno: "2024",
-    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 3",
-    copertina: "assets/lo-scettro-di-priamo.jpg",
-    trama: "",
-    link: "https://www.amazon.it/dp/8894826740",
-    stelle: 4.0,
-    recensioni: 1
-  },
-  {
-    tipo: "romanzo",
     titolo: "Sussurri",
+    genere: "Narrativa",
     anno: "2024",
     editore: "Golem Edizioni",
     copertina: "assets/sussurri.jpg",
@@ -299,7 +295,20 @@ const libri = [
   },
   {
     tipo: "romanzo",
+    titolo: "L’ago di Cibele",
+    genere: "Thriller",
+    anno: "2020",
+    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 1",
+    copertina: "assets/l-ago-di-cibele.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894826384",
+    stelle: 4.6,
+    recensioni: 35
+  },
+  {
+    tipo: "romanzo",
     titolo: "Lo scudo di Marte",
+    genere: "Thriller",
     anno: "2022",
     editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 2",
     copertina: "assets/lo-scudo-di-marte.jpg",
@@ -310,20 +319,22 @@ const libri = [
   },
   {
     tipo: "romanzo",
-    titolo: "L’ago di Cibele",
-    anno: "2020",
-    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 1",
-    copertina: "assets/l-ago-di-cibele.jpg",
+    titolo: "Lo scettro di Priamo",
+    genere: "Thriller",
+    anno: "2024",
+    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 3",
+    copertina: "assets/lo-scettro-di-priamo.jpg",
     trama: "",
-    link: "https://www.amazon.it/dp/8894826384",
-    stelle: 4.6,
-    recensioni: 35
+    link: "https://www.amazon.it/dp/8894826740",
+    stelle: 4.0,
+    recensioni: 1
   },
 
   // ----- Racconti in antologia e fumetti -----
   {
     tipo: "altro",
     titolo: "Racconti dal Derryleng, vol. 5",
+    genere: "Horror · fumetto",
     contenuto: "Le storie a fumetti “Una buona storia” e “Food delivery”",
     anno: "2023",
     editore: "Bugs Comics",
@@ -336,6 +347,7 @@ const libri = [
   {
     tipo: "altro",
     titolo: "Mostri 10",
+    genere: "Horror · fumetto",
     contenuto: "La storia a fumetti “Mr Brown”",
     anno: "2025",
     editore: "Bugs Comics",
@@ -348,6 +360,7 @@ const libri = [
   {
     tipo: "altro",
     titolo: "Yōkai – Oltre le nuvole",
+    genere: "Horror",
     contenuto: "Il racconto “Kappa”",
     anno: "",            // DA COMPLETARE
     editore: "Bakemono Lab",
@@ -360,18 +373,20 @@ const libri = [
   {
     tipo: "altro",
     titolo: "La cattiva strada",
+    genere: "Noir",
     contenuto: "Il racconto “Il cravattino”",
     anno: "",            // DA COMPLETARE
     editore: "Filigrana",
     copertina: "assets/la-cattiva-strada.jpg",
     trama: "",
-    link: "",
+    link: "https://www.amazon.it/dp/8412310519",
     stelle: null,
     recensioni: null
   },
   {
     tipo: "altro",
     titolo: "A Roma Appia Antica",
+    genere: "Narrativa",
     contenuto: "Il racconto “Via Sannio”",
     anno: "2023",
     editore: "Edizioni della Sera",
@@ -384,6 +399,7 @@ const libri = [
   {
     tipo: "altro",
     titolo: "Our Last Land – Next Solutions",
+    genere: "Fantascienza",
     contenuto: "Il racconto “Libera la tua creatività”",
     anno: "2025",
     editore: "Land Editore",
@@ -396,6 +412,7 @@ const libri = [
   {
     tipo: "altro",
     titolo: "Dalla parte della natura",
+    genere: "Narrativa",
     contenuto: "",
     anno: "2021",
     editore: "Chance Edizioni",
@@ -464,17 +481,38 @@ const GOATCOUNTER = "";
 /* ==================================================================
    5. FOTO DEL CAROSELLO
    - file: l'immagine nella cartella assets (meglio orizzontale).
-   - didascalia: facoltativa (luogo, evento, anno…).
-   Puoi aggiungerne quante vuoi.
+   - didascalia: facoltativa (luogo, evento, anno…). Scrivila tra le virgolette.
+   Per aggiungere una foto copia l'ultima riga, metti una virgola
+   alla fine della riga precedente e cambia il numero (foto-9, foto-10…).
    ================================================================== */
 const foto = [
-  { file: "assets/foto-1.jpg", didascalia: "Didascalia della prima foto" },
-  { file: "assets/foto-2.jpg", didascalia: "Didascalia della seconda foto" },
-  { file: "assets/foto-3.jpg", didascalia: "Didascalia della terza foto" }
+  { file: "assets/foto-1.jpg", didascalia: "" },
+  { file: "assets/foto-2.jpg", didascalia: "" },
+  { file: "assets/foto-3.jpg", didascalia: "" },
+  { file: "assets/foto-4.jpg", didascalia: "" },
+  { file: "assets/foto-5.jpg", didascalia: "" },
+  { file: "assets/foto-6.jpg", didascalia: "" },
+  { file: "assets/foto-7.jpg", didascalia: "" },
+  { file: "assets/foto-8.jpg", didascalia: "" }
 ];
 
 
 /* ---------- Da qui in giù non serve modificare nulla ---------- */
+
+// Se un'immagine .jpg non esiste, prova .jpeg e .png prima di arrendersi
+function caricaConAlternative(img, alternativa) {
+  const tentativi = [".jpeg", ".png", ".JPG", ".JPEG", ".PNG"];
+  const base = img.getAttribute("src").replace(/\.(jpe?g|png)$/i, "");
+  let n = 0;
+  img.addEventListener("error", function prova() {
+    if (n < tentativi.length) { img.src = base + tentativi[n++]; }
+    else { img.removeEventListener("error", prova); alternativa(); }
+  });
+}
+const fotoAutore = document.getElementById("foto-autore");
+caricaConAlternative(fotoAutore, () => {
+  fotoAutore.outerHTML = '<div class="foto foto-vuota" role="img" aria-label="Simone Fiocco">SF</div>';
+});
 const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
 const nuovaScheda = 'target="_blank" rel="noopener"';
 
@@ -503,6 +541,7 @@ libri.forEach(l => {
   li.className = "libro";
   li.innerHTML = `
     ${l.link ? `<a href="${l.link}" ${nuovaScheda}>${cover}</a>` : cover}
+    ${l.genere ? `<p class="genere">${l.genere}</p>` : ""}
     <h3>${l.titolo}</h3>
     ${l.contenuto ? `<p class="contenuto">${l.contenuto}</p>` : ""}
     ${dati ? `<p class="dati">${dati}</p>` : ""}
@@ -512,7 +551,7 @@ libri.forEach(l => {
   `;
   // Se il file della copertina non c'è ancora, usa la copertina col titolo
   const img = li.querySelector("img.copertina");
-  if (img) img.addEventListener("error", () => { img.outerHTML = copertinaTipografica(l); });
+  if (img) caricaConAlternative(img, () => { img.outerHTML = copertinaTipografica(l); });
   scaffale.appendChild(li);
 });
 
@@ -575,8 +614,9 @@ foto.forEach((f, i) => {
   fig.className = "scatto";
   fig.innerHTML = `<img src="${f.file}" alt="${f.didascalia || "Foto " + (i + 1)}" loading="lazy">
     ${f.didascalia ? `<figcaption>${f.didascalia}</figcaption>` : ""}`;
-  fig.querySelector("img").addEventListener("error", e => {
-    e.target.outerHTML = `<div class="scatto-vuoto">Foto ${i + 1} non ancora caricata</div>`;
+  const imgFoto = fig.querySelector("img");
+  caricaConAlternative(imgFoto, () => {
+    imgFoto.outerHTML = `<div class="scatto-vuoto">Foto ${i + 1} non ancora caricata</div>`;
   });
   binario.appendChild(fig);
 });
