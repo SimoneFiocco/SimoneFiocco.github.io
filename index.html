@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simone Fiocco – Scrittore e sceneggiatore</title>
+<meta name="description" content="Romanzi, racconti, fumetti ed eventi di Simone Fiocco.">
+<!-- Anteprima quando il link viene condiviso (WhatsApp, Facebook…). Se cambi indirizzo del sito, aggiorna i due link qui sotto. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Simone Fiocco – Scrittore e sceneggiatore">
+<meta property="og:description" content="Romanzi, racconti, fumetti ed eventi di Simone Fiocco.">
+<meta property="og:url" content="https://filosofiocco.github.io/SimoneFiocco.github.io/">
+<meta property="og:image" content="https://filosofiocco.github.io/SimoneFiocco.github.io/assets/foto.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231d2624'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='32' text-anchor='middle' fill='%23b8955c'%3ESF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --notte: #1d2624;
+    --pietra: #2a3532;
+    --osso: #e6dfd0;
+    --cenere: #a8a294;
+    --ottone: #b8955c;
+    --sangue: #7a2a2c;
+    --display: "IM Fell English", Georgia, serif;
+    --testo: "Alegreya", Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--notte);
+    color: var(--osso);
+    font: 1.1rem/1.7 var(--testo);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ottone); }
+  a:focus-visible, summary:focus-visible, button:focus-visible { outline: 2px solid var(--ottone); outline-offset: 3px; }
+  .pagina { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* Menu */
+  nav { display: flex; gap: 1.8rem; justify-content: flex-end; padding-top: 1.5rem; font-style: italic; }
+  nav a { color: var(--cenere); text-decoration: none; }
+  nav a:hover { color: var(--osso); }
+
+  /* Intestazione: foto al centro, nome e biografia sotto */
+  header {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 3.5rem 0 4.5rem;
+    border-bottom: 1px solid var(--sangue);
+  }
+  .foto {
+    width: min(16rem, 70vw); aspect-ratio: 4 / 5; object-fit: cover;
+    filter: grayscale(1) contrast(1.05); background: var(--pietra);
+    box-shadow: 8px 8px 0 var(--sangue);
+  }
+  .foto-vuota { display: grid; place-items: center; font: 4rem var(--display); color: var(--cenere); }
+  h1 { font: 400 clamp(3rem, 10vw, 7rem)/0.95 var(--display); letter-spacing: -0.02em; margin-top: 2.5rem; }
+  h1 span { font-style: italic; color: var(--cenere); }
+  .ruolo { margin-top: 0.8rem; color: var(--cenere); font-style: italic; }
+  .bio { max-width: 36rem; margin-top: 2.2rem; }
+  .bio p + p { margin-top: 0.9em; }
+
+  h2 { font: 400 2.4rem/1.1 var(--display); margin: 6rem 0 2.5rem; scroll-margin-top: 2rem; }
+  h2.sotto { font-size: 1.7rem; margin-top: 4.5rem; color: var(--cenere); font-style: italic; }
+  .libro .contenuto { font-size: 0.9rem; font-style: italic; color: var(--cenere); }
+
+  /* Libri */
+  .scaffale { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 3rem 2rem; }
+  .libro { display: flex; flex-direction: column; }
+  .copertina { aspect-ratio: 2 / 3; width: 100%; object-fit: cover; display: block; box-shadow: 6px 6px 0 var(--pietra); }
+  .copertina-vuota { display: flex; flex-direction: column; justify-content: space-between; padding: 1.2rem 1rem; background: var(--sangue); font: 1.35rem/1.15 var(--display); }
+  .copertina-vuota small { font: italic 0.85rem var(--testo); opacity: .75; }
+  .libro .genere { margin-top: 0.9rem; font-size: 0.85rem; color: var(--ottone); letter-spacing: 0.04em; }
+  .libro .genere + h3 { margin-top: 0.1rem; }
+  .libro h3 { font: 500 1.05rem/1.3 var(--testo); margin-top: 1rem; }
+  .libro .dati { font-size: 0.9rem; color: var(--cenere); }
+  .voto { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--cenere); margin-top: 0.3rem; }
+  .stelle { position: relative; display: inline-block; font-size: 1rem; letter-spacing: 2px; color: var(--pietra); line-height: 1; }
+  .stelle::before { content: "★★★★★"; }
+  .stelle span { position: absolute; inset: 0 auto 0 0; overflow: hidden; white-space: nowrap; color: var(--ottone); }
+  .stelle span::before { content: "★★★★★"; }
+  .libro details { margin-top: 0.4rem; font-size: 0.95rem; }
+  .libro summary { cursor: pointer; color: var(--cenere); font-style: italic; }
+  .libro details p { margin-top: 0.5rem; color: var(--cenere); }
+  .compra {
+    margin-top: auto; padding-top: 0.9rem;
+  }
+  .compra a {
+    display: inline-block; padding: 0.35rem 0.9rem;
+    border: 1px solid var(--ottone); color: var(--ottone);
+    text-decoration: none; font-size: 0.95rem;
+  }
+  .compra a:hover { background: var(--ottone); color: var(--notte); }
+
+  /* Eventi */
+  .eventi { list-style: none; padding: 0; }
+  .evento {
+    display: grid; grid-template-columns: 6rem 1fr; gap: 1.5rem;
+    padding: 1.5rem 0; border-top: 1px solid var(--pietra);
+  }
+  .evento:last-child { border-bottom: 1px solid var(--pietra); }
+  .data { text-align: center; line-height: 1; }
+  .data .giorno { display: block; font: 3.2rem/1 var(--display); color: var(--ottone); }
+  .data .mese { font-style: italic; color: var(--cenere); }
+  .evento h3 { font: 500 1.2rem/1.3 var(--testo); }
+  .evento .dove { color: var(--cenere); font-size: 0.95rem; }
+  .evento p.nota { margin-top: 0.4rem; font-size: 0.95rem; }
+  .nessuno { color: var(--cenere); font-style: italic; }
+  .passati { margin-top: 2rem; color: var(--cenere); }
+  .passati summary { cursor: pointer; font-style: italic; }
+  .passati ul { list-style: none; padding: 0; margin-top: 1rem; font-size: 0.95rem; }
+  .passati li + li { margin-top: 0.4rem; }
+
+  /* Video */
+  .video-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 2.5rem 2rem; }
+  .schermo { position: relative; aspect-ratio: 16 / 9; background: var(--pietra); overflow: hidden; }
+  .schermo button { all: unset; cursor: pointer; position: absolute; inset: 0; display: grid; place-items: center; }
+  .schermo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.6) brightness(.75); transition: filter .3s; }
+  .schermo button:hover img { filter: none; }
+  .schermo .play {
+    position: relative; width: 4rem; height: 4rem; border-radius: 50%;
+    background: var(--sangue); display: grid; place-items: center;
+  }
+  .schermo .play::after { content: ""; border-left: 1.1rem solid var(--osso); border-top: .7rem solid transparent; border-bottom: .7rem solid transparent; margin-left: .3rem; }
+  .schermo iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video h3 { font: 500 1.05rem/1.3 var(--testo); margin-top: 0.8rem; }
+  .video p { font-size: 0.95rem; color: var(--cenere); }
+  .video .su-youtube { margin-top: 0.3rem; font-size: 0.9rem; font-style: italic; }
+
+  /* Video: sezione richiudibile */
+  .altri-video { margin-top: 5rem; border-top: 1px solid var(--pietra); padding-top: 1.5rem; }
+  .altri-video summary {
+    cursor: pointer; font: 1.5rem/1.2 var(--display); color: var(--cenere);
+    list-style: none; display: flex; align-items: center; gap: 0.8rem;
+  }
+  .altri-video summary::-webkit-details-marker { display: none; }
+  .altri-video summary::before { content: "+"; color: var(--ottone); width: 1rem; }
+  .altri-video[open] summary::before { content: "–"; }
+  .altri-video summary:hover { color: var(--osso); }
+  .altri-video .video-griglia { margin-top: 2rem; }
+
+  /* Carosello foto */
+  .carosello-binario {
+    position: relative;
+    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; scrollbar-width: none; padding-bottom: 0.5rem;
+  }
+  .carosello-binario::-webkit-scrollbar { display: none; }
+  /* Ogni foto mantiene le sue proporzioni: stessa altezza, larghezza variabile */
+  .scatto { flex: 0 0 auto; scroll-snap-align: start; margin: 0; max-width: 88vw; }
+  .scatto img {
+    height: clamp(15rem, 55vw, 24rem); width: auto; max-width: 88vw;
+    object-fit: contain; display: block; background: var(--pietra);
+  }
+  .scatto .scatto-vuoto {
+    height: clamp(15rem, 55vw, 24rem); width: clamp(12rem, 45vw, 19rem);
+    display: grid; place-items: center; background: var(--pietra);
+  }
+  .scatto figcaption { margin-top: 0.6rem; font-size: 0.95rem; font-style: italic; color: var(--cenere); }
+  .carosello-comandi { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.2rem; color: var(--cenere); }
+  .carosello-comandi button {
+    width: 2.6rem; height: 2.6rem; border: 1px solid var(--ottone); background: none;
+    color: var(--ottone); font: 1.6rem/1 var(--display); cursor: pointer;
+  }
+  .carosello-comandi button:hover { background: var(--ottone); color: var(--notte); }
+  .carosello-comandi button:disabled { opacity: .3; cursor: default; background: none; color: var(--ottone); }
+
+  footer {
+    margin-top: 7rem; padding: 2rem 0 3rem;
+    border-top: 1px solid var(--pietra);
+    font-size: 0.9rem; color: var(--cenere);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    h1 { animation: emergi 1.6s ease-out both; }
+    @keyframes emergi { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: none; } }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (max-width: 44rem) {
+    header { padding-top: 2rem; }
+    .evento { grid-template-columns: 4.5rem 1fr; gap: 1rem; }
+    .data .giorno { font-size: 2.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="pagina">
+
+  <nav>
+    <a href="#libri">Libri</a>
+    <a href="#eventi">Eventi</a>
+    <a href="#foto">Foto</a>
+  </nav>
+
+  <header>
+    <!-- FOTO: carica il file come assets/foto.jpg. Finché manca, compaiono le iniziali. -->
+    <img class="foto" id="foto-autore" src="assets/foto.jpg" alt="Simone Fiocco">
+    <h1>Simone <span>Fiocco</span></h1>
+    <p class="ruolo">Scrittore e sceneggiatore</p>
+    <div class="bio">
+      <p>Simone Fiocco, classe ’83, è uno scrittore e sceneggiatore di Roma.</p>
+      <p>Cresciuto leggendo Lovecraft e guardando Notte horror alla tv, da sempre ama raccontare storie che esplorano il lato oscuro della mente e della società.</p>
+      <p>Ha pubblicato racconti, romanzi e fumetti con diversi editori, e ha collaborato a vario titolo con diverse case editrici e magazine.</p>
+    </div>
+  </header>
+
+  <h2 id="libri">Romanzi</h2>
+  <ul class="scaffale" id="scaffale-romanzi"></ul>
+
+  <h2 class="sotto">Racconti in antologia e fumetti</h2>
+  <ul class="scaffale" id="scaffale-altro"></ul>
+
+  <h2 id="eventi">Prossimi eventi</h2>
+  <ul class="eventi" id="eventi-futuri"></ul>
+  <details class="passati" id="box-passati" hidden>
+    <summary>Eventi passati</summary>
+    <ul id="eventi-passati"></ul>
+  </details>
+
+  <h2 id="foto">Foto</h2>
+  <div class="carosello">
+    <div class="carosello-binario" id="carosello" tabindex="0" aria-label="Galleria fotografica, scorri per vedere le altre"></div>
+    <div class="carosello-comandi">
+      <button type="button" id="foto-prec" aria-label="Foto precedente">‹</button>
+      <span id="foto-pos" aria-live="polite"></span>
+      <button type="button" id="foto-succ" aria-label="Foto successiva">›</button>
+    </div>
+  </div>
+
+  <details class="altri-video" id="video">
+    <summary>Booktrailer e interviste</summary>
+    <div class="video-griglia" id="video-griglia"></div>
+  </details>
+
+  <footer>
+    <span>© <span id="anno"></span> Simone Fiocco</span>
+    <span id="contatore" hidden></span>
+    <a href="mailto:filosofiocco@yahoo.it">filosofiocco@yahoo.it</a>
+  </footer>
+
+</div>
+
+<script>
+/* ==================================================================
+   1. LIBRI
+   - genere: compare sotto la copertina (Horror, Thriller, Narrativa…).
+   - I libri compaiono nell'ordine in cui sono scritti qui.
+   - tipo: "romanzo" oppure "altro" (antologie, riviste, fumetti):
+     decide in quale delle due sezioni compare.
+   - contenuto: per le antologie, il titolo del tuo racconto o della tua storia.
+   - link: pagina dove comprarlo. Il pulsante si adatta da solo
+     (Amazon, IBS, Feltrinelli, altrimenti "Acquista dall'editore").
+   - stelle / recensioni: valutazione Amazon, da aggiornare a mano. null = nascosta.
+   - copertina: file nella cartella assets. Se manca, compare una copertina col titolo.
+   - trama: due o tre righe tue (quarta di copertina).
+   Le voci con "DA COMPLETARE" aspettano editore, anno o link.
+   ================================================================== */
+const libri = [
+  // ----- Romanzi (compaiono in questo ordine) -----
+  {
+    tipo: "romanzo",
+    titolo: "Filari di sangue",
+    genere: "Horror",
+    anno: "2025",
+    editore: "Indipendente, illustrazioni di Antonio Cella",
+    copertina: "assets/filari-di-sangue.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/B0FJFKH75D",
+    stelle: 4.3,
+    recensioni: 51
+  },
+  {
+    tipo: "romanzo",
+    titolo: "Sara",
+    genere: "Horror",
+    anno: "2026",
+    editore: "Indipendente, illustrazioni di Antonio Cella",
+    copertina: "assets/sara.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/B0GN5B6TQ1",
+    stelle: 5.0,
+    recensioni: 13
+  },
+  {
+    tipo: "romanzo",
+    titolo: "Un male necessario",
+    genere: "Thriller",
+    anno: "2025",
+    editore: "Delos Digital, collana Delos Crime",
+    copertina: "assets/un-male-necessario.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/B0DYC7BQMQ",
+    stelle: 4.7,
+    recensioni: 4
+  },
+  {
+    tipo: "romanzo",
+    titolo: "Sussurri",
+    genere: "Narrativa",
+    anno: "2024",
+    editore: "Golem Edizioni",
+    copertina: "assets/sussurri.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8892911848",
+    stelle: 4.3,
+    recensioni: 44
+  },
+  {
+    tipo: "romanzo",
+    titolo: "L’ago di Cibele",
+    genere: "Thriller",
+    anno: "2020",
+    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 1",
+    copertina: "assets/l-ago-di-cibele.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894826384",
+    stelle: 4.6,
+    recensioni: 35
+  },
+  {
+    tipo: "romanzo",
+    titolo: "Lo scudo di Marte",
+    genere: "Thriller",
+    anno: "2022",
+    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 2",
+    copertina: "assets/lo-scudo-di-marte.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894826791",
+    stelle: 5.0,
+    recensioni: 4
+  },
+  {
+    tipo: "romanzo",
+    titolo: "Lo scettro di Priamo",
+    genere: "Thriller",
+    anno: "2024",
+    editore: "Bakemono Lab · Saga dei Pignora Imperii, vol. 3",
+    copertina: "assets/lo-scettro-di-priamo.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894826740",
+    stelle: 4.0,
+    recensioni: 1
+  },
+
+  // ----- Racconti in antologia e fumetti -----
+  {
+    tipo: "altro",
+    titolo: "Racconti dal Derryleng, vol. 5",
+    genere: "Horror · fumetto",
+    contenuto: "Le storie a fumetti “Una buona storia” e “Food delivery”",
+    anno: "2023",
+    editore: "Bugs Comics",
+    copertina: "assets/derryleng-5.jpg",
+    trama: "",
+    link: "https://www.bugscomics.com/prodotto/racconti-dal-derryleng-vol-v/",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "Mostri 10",
+    genere: "Horror · fumetto",
+    contenuto: "La storia a fumetti “Mr Brown”",
+    anno: "2025",
+    editore: "Bugs Comics",
+    copertina: "assets/mostri-10.jpg",
+    trama: "",
+    link: "https://www.bugscomics.com/prodotto/mostri-10/",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "Yōkai – Oltre le nuvole",
+    genere: "Horror",
+    contenuto: "Il racconto “Kappa”",
+    anno: "",            // DA COMPLETARE
+    editore: "Bakemono Lab",
+    copertina: "assets/yokai-oltre-le-nuvole.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894826457",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "La cattiva strada",
+    genere: "Noir",
+    contenuto: "Il racconto “Il cravattino”",
+    anno: "",            // DA COMPLETARE
+    editore: "Filigrana",
+    copertina: "assets/la-cattiva-strada.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8412310519",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "A Roma Appia Antica",
+    genere: "Narrativa",
+    contenuto: "Il racconto “Via Sannio”",
+    anno: "2023",
+    editore: "Edizioni della Sera",
+    copertina: "assets/a-roma-appia-antica.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/8894118290",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "Our Last Land – Next Solutions",
+    genere: "Fantascienza",
+    contenuto: "Il racconto “Libera la tua creatività”",
+    anno: "2025",
+    editore: "Land Editore",
+    copertina: "assets/our-last-land.jpg",
+    trama: "",
+    link: "https://www.amazon.it/dp/B0F9NL4BQG",
+    stelle: null,
+    recensioni: null
+  },
+  {
+    tipo: "altro",
+    titolo: "Dalla parte della natura",
+    genere: "Narrativa",
+    contenuto: "",
+    anno: "2021",
+    editore: "Chance Edizioni",
+    copertina: "assets/dalla-parte-della-natura.jpg",
+    trama: "",
+    link: "https://www.mondadoristore.it/Dalla-parte-natura-Ediz-na/eai978883223826/",
+    stelle: null,
+    recensioni: null
+  }
+];
+
+/* ==================================================================
+   2. EVENTI
+   - data nel formato AAAA-MM-GG. Gli eventi già passati finiscono
+     da soli nella sezione "Eventi passati".
+   - link: facoltativo (pagina dell'evento, prenotazione…).
+   ================================================================== */
+const eventi = [
+  {
+    data: "2026-11-14",
+    ora: "",
+    titolo: "Presto nuove info",
+    luogo: "",
+    citta: "Roma",
+    nota: "",
+    link: ""
+  },
+  {
+    data: "2026-12-04",
+    ora: "",
+    titolo: "Fiera o festival",
+    luogo: "Stand dell'editore",
+    citta: "Roma",
+    nota: "",
+    link: ""
+  }
+];
+
+/* ==================================================================
+   3. VIDEO (YouTube)
+   - youtube: incolla l'indirizzo del video copiato da YouTube
+     (es. "https://www.youtube.com/watch?v=AbC123xYz45"), oppure solo il codice.
+   ================================================================== */
+const video = [
+  { youtube: "https://www.youtube.com/watch?v=DnT_wXEorYs&t=127s", titolo: "Simone Fiocco al Salotto letterario The Digital Moon", descrizione: "" },
+  { youtube: "https://www.youtube.com/watch?v=-utgO16faOQ&t=436s", titolo: "Intervento al programma Autori chiamano... on Air", descrizione: "" },
+  { youtube: "https://www.youtube.com/watch?v=Qhr8K5UnDYs&t=265s", titolo: "Simone Fiocco a Radio Antenna 1", descrizione: "" },
+  { youtube: "https://www.youtube.com/watch?v=HYuYOW4iW-Q&t=82s", titolo: "Intervista per il format letterario RubricaLuce Verde", descrizione: "" }
+];
+
+/* ==================================================================
+   4. CONTATORE VISITE (GoatCounter, gratuito)
+   Scrivi qui il nome scelto su goatcounter.com (es. "simonecognome").
+   Se lo lasci vuoto il contatore non compare.
+   ================================================================== */
+const GOATCOUNTER = "simonefiocco";
+
+
+/* ==================================================================
+   5. FOTO DEL CAROSELLO
+   - file: l'immagine nella cartella assets. Ogni foto viene mostrata intera,
+     senza ritagli, qualunque sia il formato.
+   - didascalia: facoltativa (luogo, evento, anno…). Scrivila tra le virgolette.
+   Per aggiungere una foto copia l'ultima riga, metti una virgola
+   alla fine della riga precedente e cambia il numero (foto-9, foto-10…).
+   ================================================================== */
+const foto = [
+  { file: "assets/foto-1.jpg", didascalia: "" },
+  { file: "assets/foto-2.jpg", didascalia: "" },
+  { file: "assets/foto-3.jpg", didascalia: "" },
+  { file: "assets/foto-4.jpg", didascalia: "" },
+  { file: "assets/foto-5.jpg", didascalia: "" },
+  { file: "assets/foto-6.jpg", didascalia: "" },
+  { file: "assets/foto-7.jpg", didascalia: "" },
+  { file: "assets/foto-8.jpg", didascalia: "" }
+];
+
+
+/* ---------- Da qui in giù non serve modificare nulla ---------- */
+
+// Se un'immagine .jpg non esiste, prova .jpeg e .png prima di arrendersi
+function caricaConAlternative(img, alternativa) {
+  const tentativi = [".jpeg", ".png", ".JPG", ".JPEG", ".PNG"];
+  const base = img.getAttribute("src").replace(/\.(jpe?g|png)$/i, "");
+  let n = 0;
+  img.addEventListener("error", function prova() {
+    if (n < tentativi.length) { img.src = base + tentativi[n++]; }
+    else { img.removeEventListener("error", prova); alternativa(); }
+  });
+}
+const fotoAutore = document.getElementById("foto-autore");
+caricaConAlternative(fotoAutore, () => {
+  fotoAutore.outerHTML = '<div class="foto foto-vuota" role="img" aria-label="Simone Fiocco">SF</div>';
+});
+const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+const nuovaScheda = 'target="_blank" rel="noopener"';
+
+// Libri
+function copertinaTipografica(l) {
+  return `<div class="copertina copertina-vuota" aria-hidden="true"><span>${l.titolo}</span><small>Simone Fiocco</small></div>`;
+}
+function negozio(link) {
+  if (/amazon\./i.test(link)) return "Acquista su Amazon";
+  if (/ibs\.it/i.test(link)) return "Acquista su IBS";
+  if (/lafeltrinelli\.it/i.test(link)) return "Acquista su Feltrinelli";
+  if (/mondadoristore\.it/i.test(link)) return "Acquista su Mondadori Store";
+  return "Acquista dall'editore";
+}
+libri.forEach(l => {
+  const scaffale = document.getElementById(l.tipo === "romanzo" ? "scaffale-romanzi" : "scaffale-altro");
+  const cover = l.copertina
+    ? `<img class="copertina" src="${l.copertina}" alt="Copertina di ${l.titolo}" loading="lazy">`
+    : copertinaTipografica(l);
+  const voto = l.stelle
+    ? `<div class="voto"><span class="stelle" role="img" aria-label="${l.stelle.toFixed(1).replace(".", ",")} stelle su 5"><span style="width:${l.stelle / 5 * 100}%"></span></span>
+       ${l.stelle.toFixed(1).replace(".", ",")}${l.recensioni ? ` (${l.recensioni} ${l.recensioni === 1 ? "valutazione" : "valutazioni"})` : ""}</div>`
+    : "";
+  const dati = [l.editore, l.anno].filter(Boolean).join(", ");
+  const li = document.createElement("li");
+  li.className = "libro";
+  li.innerHTML = `
+    ${l.link ? `<a href="${l.link}" ${nuovaScheda}>${cover}</a>` : cover}
+    ${l.genere ? `<p class="genere">${l.genere}</p>` : ""}
+    <h3>${l.titolo}</h3>
+    ${l.contenuto ? `<p class="contenuto">${l.contenuto}</p>` : ""}
+    ${dati ? `<p class="dati">${dati}</p>` : ""}
+    ${voto}
+    ${l.trama ? `<details><summary>Trama</summary><p>${l.trama}</p></details>` : ""}
+    ${l.link ? `<div class="compra"><a href="${l.link}" ${nuovaScheda}>${negozio(l.link)}</a></div>` : ""}
+  `;
+  // Se il file della copertina non c'è ancora, usa la copertina col titolo
+  const img = li.querySelector("img.copertina");
+  if (img) caricaConAlternative(img, () => { img.outerHTML = copertinaTipografica(l); });
+  scaffale.appendChild(li);
+});
+
+// Eventi
+const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
+const ordinati = [...eventi].sort((a, b) => a.data.localeCompare(b.data));
+const futuri = ordinati.filter(e => new Date(e.data + "T00:00") >= oggi);
+const passati = ordinati.filter(e => new Date(e.data + "T00:00") < oggi).reverse();
+
+const ulFuturi = document.getElementById("eventi-futuri");
+if (!futuri.length) ulFuturi.innerHTML = `<li class="nessuno">Nessun evento in programma al momento.</li>`;
+futuri.forEach(e => {
+  const d = new Date(e.data + "T00:00");
+  const titolo = e.link ? `<a href="${e.link}" ${nuovaScheda}>${e.titolo}</a>` : e.titolo;
+  ulFuturi.insertAdjacentHTML("beforeend", `
+    <li class="evento">
+      <div class="data"><span class="giorno">${d.getDate()}</span><span class="mese">${MESI[d.getMonth()]} ${d.getFullYear()}</span></div>
+      <div>
+        <h3>${titolo}</h3>
+        <p class="dove">${[e.luogo, e.citta, e.ora && "ore " + e.ora].filter(Boolean).join(", ")}</p>
+        ${e.nota ? `<p class="nota">${e.nota}</p>` : ""}
+      </div>
+    </li>`);
+});
+if (passati.length) {
+  document.getElementById("box-passati").hidden = false;
+  const ulPassati = document.getElementById("eventi-passati");
+  passati.forEach(e => {
+    const d = new Date(e.data + "T00:00");
+    ulPassati.insertAdjacentHTML("beforeend",
+      `<li>${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()} – ${e.titolo}, ${e.citta}</li>`);
+  });
+}
+
+// Video: si carica solo l'anteprima; il player di YouTube parte al clic
+// Accetta sia il codice del video sia l'indirizzo completo copiato da YouTube
+function codiceYouTube(testo) {
+  if (!testo) return "";
+  testo = testo.trim();
+  const m = testo.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  return /^[A-Za-z0-9_-]{11}$/.test(testo) ? testo : "";
+}
+const griglia = document.getElementById("video-griglia");
+video.forEach(v => {
+  const id = codiceYouTube(v.youtube);
+  const box = document.createElement("div");
+  box.className = "video";
+  const schermo = id
+    ? `<div class="schermo"><button aria-label="Guarda: ${v.titolo}">
+         <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy"><span class="play"></span>
+       </button></div>`
+    : `<div class="schermo"><button disabled aria-label="Video non ancora inserito"><span class="play"></span></button></div>`;
+  box.innerHTML = `${schermo}<h3>${v.titolo}</h3>${v.descrizione ? `<p>${v.descrizione}</p>` : ""}
+    ${id ? `<p class="su-youtube"><a href="https://www.youtube.com/watch?v=${id}" ${nuovaScheda}>Guarda su YouTube</a></p>` : ""}`;
+  if (id) {
+    box.querySelector("button").addEventListener("click", () => {
+      box.querySelector(".schermo").innerHTML =
+        `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="${v.titolo}"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>`;
+    });
+  }
+  griglia.appendChild(box);
+});
+
+// Carosello foto
+const binario = document.getElementById("carosello");
+foto.forEach((f, i) => {
+  const fig = document.createElement("figure");
+  fig.className = "scatto";
+  fig.innerHTML = `<img src="${f.file}" alt="${f.didascalia || "Foto " + (i + 1)}" loading="lazy">
+    ${f.didascalia ? `<figcaption>${f.didascalia}</figcaption>` : ""}`;
+  const imgFoto = fig.querySelector("img");
+  caricaConAlternative(imgFoto, () => {
+    imgFoto.outerHTML = `<div class="scatto-vuoto">Foto ${i + 1} non ancora caricata</div>`;
+  });
+  binario.appendChild(fig);
+});
+const prec = document.getElementById("foto-prec"), succ = document.getElementById("foto-succ"), pos = document.getElementById("foto-pos");
+function scatti() { return [...binario.querySelectorAll(".scatto")]; }
+function indiceCorrente() {
+  const x = binario.scrollLeft, lista = scatti();
+  let i = lista.findIndex(el => el.offsetLeft >= x - 4);
+  return i < 0 ? lista.length - 1 : i;
+}
+function vaiA(i) {
+  const lista = scatti(); if (!lista.length) return;
+  i = Math.max(0, Math.min(i, lista.length - 1));
+  binario.scrollTo({ left: lista[i].offsetLeft });
+}
+function aggiornaCarosello() {
+  pos.textContent = `${Math.min(indiceCorrente() + 1, foto.length)} di ${foto.length}`;
+  prec.disabled = binario.scrollLeft <= 2;
+  succ.disabled = binario.scrollLeft + binario.clientWidth >= binario.scrollWidth - 2;
+}
+prec.addEventListener("click", () => vaiA(indiceCorrente() - 1));
+succ.addEventListener("click", () => vaiA(indiceCorrente() + 1));
+binario.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") { e.preventDefault(); succ.click(); }
+  if (e.key === "ArrowLeft") { e.preventDefault(); prec.click(); }
+});
+binario.addEventListener("scroll", () => requestAnimationFrame(aggiornaCarosello));
+window.addEventListener("resize", aggiornaCarosello);
+window.addEventListener("load", aggiornaCarosello);
+aggiornaCarosello();
+if (!foto.length) document.querySelector(".carosello").previousElementSibling.hidden = document.querySelector(".carosello").hidden = true;
+
+// Anno nel piè di pagina
+document.getElementById("anno").textContent = new Date().getFullYear();
+
+// Contatore visite
+if (GOATCOUNTER) {
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.dataset.goatcounter = `https://${GOATCOUNTER}.goatcounter.com/count`;
+  document.body.appendChild(s);
+  fetch(`https://${GOATCOUNTER}.goatcounter.com/counter/TOTAL.json`)
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (!d) return;
+      const c = document.getElementById("contatore");
+      c.textContent = `${d.count} visite`;
+      c.hidden = false;
+    })
+    .catch(() => {});
+}
+</script>
+</body>
+</html>
