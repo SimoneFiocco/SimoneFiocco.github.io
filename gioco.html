@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Filari di sangue – La fuga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --notte: #0d0a09;
+    --terra: #1d2624;
+    --osso: #e6dfd0;
+    --cenere: #8f897c;
+    --sangue: #a3262a;
+    --ottone: #d9a441;
+    --pixel: "Press Start 2P", "Courier New", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--notte); color: var(--osso);
+    font: 12px/1.8 var(--pixel);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 10px 20px;
+    -webkit-user-select: none; user-select: none;
+    touch-action: manipulation;
+  }
+  a { color: var(--cenere); text-decoration: none; }
+  a:hover { color: var(--osso); }
+  .barra { width: min(92vw, 68vh, 600px); display: flex; justify-content: space-between; align-items: center; font-size: 9px; }
+  .hud {
+    width: min(92vw, 68vh, 600px); display: flex; justify-content: space-between;
+    margin: 10px 0 8px; font-size: 10px; color: var(--cenere);
+  }
+  .hud b { color: var(--osso); font-weight: normal; }
+  .hud .lanterne b { color: var(--ottone); }
+  .schermo { position: relative; width: min(92vw, 68vh, 600px); aspect-ratio: 1; container-type: inline-size; }
+  canvas {
+    width: 100%; height: 100%; display: block;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    background: #000; border: 3px solid #2a1a14;
+  }
+  .velo {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: safe center; text-align: center; gap: 3.2cqw;
+    padding: 4cqw 4cqw; background: rgba(5, 3, 3, 0.86); border: 3px solid #2a1a14;
+    overflow-y: auto;
+  }
+  .velo[hidden] { display: none; }
+  .velo h1 { font-size: min(4.2cqw, 24px); line-height: 1.6; color: var(--sangue); text-shadow: 2px 2px 0 #000; max-width: 100%; overflow-wrap: anywhere; }
+  .velo h2 { font-size: min(3.4cqw, 18px); color: var(--sangue); }
+  .velo p { font-size: clamp(7px, 2.2cqw, 11px); line-height: 1.75; color: var(--osso); max-width: 30em; }
+  .velo .piccolo { color: var(--cenere); }
+  .velo button { font-size: clamp(8px, 2.6cqw, 12px); padding: 2.4cqw 4cqw; }
+  .velo button, .comandi button {
+    font: inherit; cursor: pointer; border: 3px solid var(--ottone);
+    background: #1a120d; color: var(--ottone); padding: 10px 16px;
+  }
+  .velo button:hover { background: var(--ottone); color: #000; }
+  .lampeggia { animation: lamp 1s steps(2) infinite; }
+  @keyframes lamp { 50% { opacity: 0; } }
+  .messaggio {
+    position: absolute; left: 0; right: 0; top: 8px; text-align: center;
+    font-size: clamp(7px, 2.2cqw, 10px); color: var(--ottone); text-shadow: 2px 2px 0 #000;
+    pointer-events: none;
+  }
+  /* Comandi touch */
+  .comandi {
+    width: min(92vw, 68vh, 600px); margin-top: 14px;
+    display: none; justify-content: space-between; align-items: center;
+  }
+  .croce { display: grid; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(2, 52px); gap: 6px; }
+  .croce button { padding: 0; font-size: 16px; }
+  .croce .su { grid-column: 2; }
+  .croce .sx { grid-column: 1; grid-row: 2; }
+  .croce .giu { grid-column: 2; grid-row: 2; }
+  .croce .dx { grid-column: 3; grid-row: 2; }
+  .comandi .lampo { width: 92px; height: 92px; border-radius: 50%; font-size: 9px; line-height: 1.5; }
+  @media (pointer: coarse) { .comandi { display: flex; } .solo-tastiera { display: none; } }
+  @media (pointer: fine) { .solo-touch { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <a href="./">← Torna al sito</a>
+  <button id="audio" style="all:unset;cursor:pointer;color:var(--cenere)" aria-label="Attiva o disattiva l'audio">♪ AUDIO: SÌ</button>
+</div>
+
+<div class="hud" aria-live="polite">
+  <span>LIVELLO <b id="hud-livello">1</b>/<span id="hud-totale">5</span></span>
+  <span class="lanterne">LANTERNE <b id="hud-lanterne">0</b></span>
+  <span>TEMPO <b id="hud-tempo">0</b></span>
+</div>
+
+<div class="schermo">
+  <canvas id="gioco" width="304" height="304" aria-label="Il labirinto dei filari"></canvas>
+  <div class="messaggio" id="messaggio"></div>
+
+  <div class="velo" id="velo">
+    <h1 id="velo-titolo"></h1>
+    <p id="velo-testo"></p>
+    <p class="piccolo" id="velo-comandi"></p>
+    <button id="velo-pulsante"></button>
+  </div>
+</div>
+
+<div class="comandi" aria-hidden="true">
+  <div class="croce">
+    <button class="su" data-dir="su">▲</button>
+    <button class="sx" data-dir="sx">◀</button>
+    <button class="giu" data-dir="giu">▼</button>
+    <button class="dx" data-dir="dx">▶</button>
+  </div>
+  <button class="lampo" id="pulsante-lampo">LAMPO<br>DI<br>LUCE</button>
+</div>
+
+<script>
+/* ==================================================================
+   TESTI DEL GIOCO: puoi cambiarli liberamente, restando tra le virgolette.
+   ================================================================== */
+const TESTI = {
+  titolo: "FILARI DI SANGUE<br>LA FUGA",
+  introduzione: "Sei perso tra i filari, ed è notte. Charun ti sta cercando. Trova il cancello prima che ti raggiunga.",
+  comandiTastiera: "FRECCE o WASD per muoverti<br>SPAZIO per il lampo di luce · P pausa",
+  comandiTouch: "Usa le frecce sotto lo schermo, oppure scorri col dito.<br>LAMPO DI LUCE per stordire Charun.",
+  lanterna: "Le lanterne ti danno un lampo di luce: usalo quando Charun è vicino per stordirlo qualche secondo.",
+  inizia: "INIZIA",
+  livelloSuperato: "SEI USCITO DAL FILARE",
+  prossimoLivello: "Ma la vigna continua, e Charun è più veloce.",
+  continua: "AVANTI",
+  presoTitolo: "CHARUN TI HA PRESO",
+  presoTesto: "I filari non lasciano andare nessuno.",
+  riprova: "RIPROVA",
+  vittoriaTitolo: "SEI SOPRAVVISSUTO",
+  vittoriaTesto: "Hai lasciato la vigna alle spalle. Per questa notte.",
+  rigioca: "GIOCA ANCORA",
+  lanternaPresa: "HAI TROVATO UNA LANTERNA",
+  troppoLontano: "CHARUN È TROPPO LONTANO",
+  nessunaLanterna: "NON HAI LANTERNE",
+  stordito: "CHARUN È ACCECATO!",
+  sveglio: "CHARUN TI FIUTA…",
+  pausa: "PAUSA"
+};
+
+/* ==================================================================
+   DIFFICOLTÀ: numero di livelli e velocità (caselle al secondo).
+   ================================================================== */
+const LIVELLI = 5;
+const VELOCITA_GIOCATORE = 5;
+const VELOCITA_CHARUN_INIZIALE = 3.3;
+const AUMENTO_CHARUN_PER_LIVELLO = 0.35;
+const DURATA_STORDIMENTO = 4;      // secondi
+const RAGGIO_LAMPO = 6;            // caselle
+const LANTERNE_PER_LIVELLO = 2;
+
+
+/* ---------- Da qui in giù non serve modificare nulla ---------- */
+const COLS = 19, ROWS = 19, CELLA = 16;
+const canvas = document.getElementById("gioco");
+const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+
+const $ = id => document.getElementById(id);
+const DIREZIONI = { su: [0, -1], giu: [0, 1], sx: [-1, 0], dx: [1, 0] };
+const OPPOSTA = { su: "giu", giu: "su", sx: "dx", dx: "sx" };
+
+/* ---------- Sprite in pixel (8x8, ogni pixel = 2 pixel reali) ---------- */
+const SPRITE = {
+  giocatore: [
+    "..HHH...",
+    "..SSS...",
+    "...S....",
+    ".CCCCC..",
+    "C.CCC.C.",
+    "..CCC...",
+    "..C.C...",
+    ".CC.CC.."
+  ],
+  charun: [
+    ".BBB..MM",
+    "BRBRB.MM",
+    ".BBBB.h.",
+    "DDDDDDh.",
+    "D.DDDDh.",
+    ".DDDD.h.",
+    ".DDDD...",
+    ".D..D..."
+  ],
+  lanterna: [
+    "...hh...",
+    "..h..h..",
+    "..YYYY..",
+    ".YWWWWY.",
+    ".YWWWWY.",
+    ".YWWWWY.",
+    "..YYYY..",
+    "........"
+  ]
+};
+const COLORI = {
+  H: "#2b1d16", S: "#e6dfd0", C: "#8a3b2c",
+  B: "#6f93a3", R: "#ff2a2a", D: "#1f2a35", M: "#9a9a9a", h: "#6b4a2b",
+  Y: "#d9a441", W: "#fff2b0"
+};
+function disegnaSprite(mappa, x, y, tinta) {
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+    const k = mappa[r][c];
+    if (k === ".") continue;
+    ctx.fillStyle = tinta || COLORI[k];
+    ctx.fillRect(Math.round(x + c * 2), Math.round(y + r * 2), 2, 2);
+  }
+}
+
+/* ---------- Generazione del labirinto ---------- */
+function casuale(n) { return Math.floor(Math.random() * n); }
+function mescola(a) { for (let i = a.length - 1; i > 0; i--) { const j = casuale(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function creaLabirinto() {
+  const g = Array.from({ length: ROWS }, () => Array(COLS).fill(1));
+  const pila = [[1, 1]];
+  g[1][1] = 0;
+  while (pila.length) {
+    const [x, y] = pila[pila.length - 1];
+    const vicini = mescola([[2, 0], [-2, 0], [0, 2], [0, -2]])
+      .map(([dx, dy]) => [x + dx, y + dy, dx, dy])
+      .filter(([nx, ny]) => nx > 0 && ny > 0 && nx < COLS - 1 && ny < ROWS - 1 && g[ny][nx] === 1);
+    if (!vicini.length) { pila.pop(); continue; }
+    const [nx, ny, dx, dy] = vicini[0];
+    g[y + dy / 2][x + dx / 2] = 0;
+    g[ny][nx] = 0;
+    pila.push([nx, ny]);
+  }
+  // Apre alcuni passaggi in più, così ci sono anelli per seminare Charun
+  for (let y = 1; y < ROWS - 1; y++) for (let x = 1; x < COLS - 1; x++) {
+    if (g[y][x] !== 1) continue;
+    const orizz = g[y][x - 1] === 0 && g[y][x + 1] === 0 && g[y - 1][x] === 1 && g[y + 1][x] === 1;
+    const vert = g[y - 1][x] === 0 && g[y + 1][x] === 0 && g[y][x - 1] === 1 && g[y][x + 1] === 1;
+    if ((orizz || vert) && Math.random() < 0.14) g[y][x] = 0;
+  }
+  return g;
+}
+
+function distanze(g, sx, sy) {
+  const d = Array.from({ length: ROWS }, () => Array(COLS).fill(Infinity));
+  const coda = [[sx, sy]]; d[sy][sx] = 0;
+  for (let i = 0; i < coda.length; i++) {
+    const [x, y] = coda[i];
+    for (const [dx, dy] of Object.values(DIREZIONI)) {
+      const nx = x + dx, ny = y + dy;
+      if (g[ny] && g[ny][nx] === 0 && d[ny][nx] === Infinity) { d[ny][nx] = d[y][x] + 1; coda.push([nx, ny]); }
+    }
+  }
+  return d;
+}
+
+/* ---------- Sfondo: filari di vite e terra, disegnati una volta per livello ---------- */
+let sfondo;
+function preparaSfondo(g) {
+  sfondo = document.createElement("canvas");
+  sfondo.width = COLS * CELLA; sfondo.height = ROWS * CELLA;
+  const s = sfondo.getContext("2d");
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+    const px = x * CELLA, py = y * CELLA;
+    if (g[y][x] === 0) {
+      s.fillStyle = "#17110d"; s.fillRect(px, py, CELLA, CELLA);
+      for (let i = 0; i < 3; i++) { s.fillStyle = Math.random() < 0.5 ? "#231a14" : "#100b08"; s.fillRect(px + casuale(14), py + casuale(14), 2, 2); }
+    } else {
+      s.fillStyle = "#0f2216"; s.fillRect(px, py, CELLA, CELLA);
+      for (let i = 0; i < 10; i++) { s.fillStyle = Math.random() < 0.5 ? "#1f4a2a" : "#2d5e33"; s.fillRect(px + casuale(14), py + casuale(14), 2, 2); }
+      if (Math.random() < 0.35) { // grappoli
+        const gx = px + 3 + casuale(8), gy = py + 3 + casuale(8);
+        s.fillStyle = "#4b1636";
+        s.fillRect(gx, gy, 4, 2); s.fillRect(gx + 1, gy + 2, 2, 2);
+      }
+      if ((x + y) % 4 === 0) { s.fillStyle = "#3a2717"; s.fillRect(px + 7, py, 2, CELLA); } // pali
+    }
+  }
+}
+
+/* ---------- Stato del gioco ---------- */
+let griglia, giocatore, charun, uscita, lanterne, livello, cariche, tempo, stato;
+let voluta = null, stordito = 0, attesaCharun = 0, lampo = 0, distCharun = Infinity;
+let messaggioTimer = 0;
+
+function nuovaEntita(x, y) { return { x, y, tx: x, ty: y, p: 0, dir: null, inMoto: false }; }
+function posizione(e) { return [e.x + (e.tx - e.x) * e.p, e.y + (e.ty - e.y) * e.p]; }
+function libero(x, y) { return griglia[y] && griglia[y][x] === 0; }
+
+function preparaLivello() {
+  griglia = creaLabirinto();
+  preparaSfondo(griglia);
+  giocatore = nuovaEntita(1, 1);
+  uscita = { x: COLS - 2, y: ROWS - 2 };
+  const daInizio = distanze(griglia, 1, 1);
+  const daUscita = distanze(griglia, uscita.x, uscita.y);
+  const celle = [];
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (griglia[y][x] === 0) celle.push([x, y]);
+  // Charun parte lontano da te e non troppo vicino all'uscita
+  let candidate = celle.filter(([x, y]) => daInizio[y][x] >= 14 && daUscita[y][x] >= 6);
+  if (!candidate.length) candidate = celle.filter(([x, y]) => daInizio[y][x] >= 8);
+  const [cx, cy] = candidate[casuale(candidate.length)];
+  charun = nuovaEntita(cx, cy);
+  const posti = mescola(celle.filter(([x, y]) => daInizio[y][x] >= 5 && !(x === uscita.x && y === uscita.y) && !(x === cx && y === cy)));
+  lanterne = posti.slice(0, LANTERNE_PER_LIVELLO).map(([x, y]) => ({ x, y }));
+  voluta = null; stordito = 0; lampo = 0; attesaCharun = 1.6;
+  mostraMessaggio(TESTI.sveglio, 1.6);
+  aggiornaHud();
+}
+
+function aggiornaHud() {
+  $("hud-livello").textContent = livello;
+  $("hud-totale").textContent = LIVELLI;
+  $("hud-lanterne").textContent = cariche;
+  $("hud-tempo").textContent = Math.floor(tempo);
+}
+function mostraMessaggio(t, durata = 1.8) { $("messaggio").textContent = t; messaggioTimer = durata; }
+
+/* ---------- Movimento ---------- */
+function muovi(e, velocita, dt, scegli) {
+  if (!e.inMoto) {
+    const d = scegli(e);
+    if (!d) return;
+    avvia(e, d);
+  }
+  e.p += velocita * dt;
+  while (e.p >= 1) {
+    e.x = e.tx; e.y = e.ty; e.p -= 1;
+    arrivo(e);
+    const d = scegli(e);
+    if (d) avvia(e, d);
+    else { e.inMoto = false; e.p = 0; break; }
+  }
+}
+function avvia(e, d) {
+  const [dx, dy] = DIREZIONI[d];
+  e.dir = d; e.tx = e.x + dx; e.ty = e.y + dy; e.inMoto = true;
+}
+function sceltaGiocatore(e) {
+  if (voluta && libero(e.x + DIREZIONI[voluta][0], e.y + DIREZIONI[voluta][1])) return voluta;
+  if (e.dir && e.inMoto && libero(e.x + DIREZIONI[e.dir][0], e.y + DIREZIONI[e.dir][1])) return e.dir;
+  return null;
+}
+function sceltaCharun(e) {
+  if (stordito > 0 || attesaCharun > 0) return null;
+  const [gx, gy] = posizione(giocatore).map(Math.round);
+  const d = distanze(griglia, gx, gy);
+  let migliore = null, min = d[e.y][e.x];
+  for (const [nome, [dx, dy]] of Object.entries(DIREZIONI)) {
+    const v = d[e.y + dy] && d[e.y + dy][e.x + dx];
+    if (v !== undefined && v < min) { min = v; migliore = nome; }
+  }
+  return migliore;
+}
+function arrivo(e) {
+  if (e !== giocatore) return;
+  const i = lanterne.findIndex(l => l.x === e.x && l.y === e.y);
+  if (i >= 0) {
+    lanterne.splice(i, 1); cariche++; aggiornaHud();
+    mostraMessaggio(TESTI.lanternaPresa); suono("lanterna");
+  }
+}
+// Inversione immediata a metà casella, come nei classici
+function cambiaDirezione(d) {
+  voluta = d;
+  const e = giocatore;
+  if (stato === "gioco" && e.inMoto && d === OPPOSTA[e.dir]) {
+    [e.x, e.tx] = [e.tx, e.x]; [e.y, e.ty] = [e.ty, e.y];
+    e.p = 1 - e.p; e.dir = d;
+  }
+}
+
+function usaLampo() {
+  if (stato !== "gioco") return;
+  if (cariche <= 0) { mostraMessaggio(TESTI.nessunaLanterna); return; }
+  const [ax, ay] = posizione(giocatore), [bx, by] = posizione(charun);
+  if (Math.hypot(ax - bx, ay - by) > RAGGIO_LAMPO) { mostraMessaggio(TESTI.troppoLontano); return; }
+  cariche--; stordito = DURATA_STORDIMENTO; lampo = 1;
+  // Charun si ferma sulla casella più vicina
+  if (charun.p > 0.5) { charun.x = charun.tx; charun.y = charun.ty; }
+  charun.tx = charun.x; charun.ty = charun.y; charun.p = 0; charun.inMoto = false;
+  mostraMessaggio(TESTI.stordito, DURATA_STORDIMENTO); suono("lampo"); aggiornaHud();
+}
+
+/* ---------- Ciclo di gioco ---------- */
+let ultimo = 0;
+function ciclo(t) {
+  const dt = Math.min(0.05, (t - ultimo) / 1000 || 0);
+  ultimo = t;
+  if (stato === "gioco") aggiorna(dt);
+  if (griglia) disegna(t / 1000);
+  requestAnimationFrame(ciclo);
+}
+
+function aggiorna(dt) {
+  tempo += dt;
+  if (attesaCharun > 0) attesaCharun -= dt;
+  if (stordito > 0) stordito -= dt;
+  if (lampo > 0) lampo = Math.max(0, lampo - dt * 1.6);
+  if (messaggioTimer > 0 && (messaggioTimer -= dt) <= 0) $("messaggio").textContent = "";
+
+  muovi(giocatore, VELOCITA_GIOCATORE, dt, sceltaGiocatore);
+  const velC = VELOCITA_CHARUN_INIZIALE + (livello - 1) * AUMENTO_CHARUN_PER_LIVELLO;
+  muovi(charun, velC, dt, sceltaCharun);
+
+  const [ax, ay] = posizione(giocatore), [bx, by] = posizione(charun);
+  distCharun = Math.hypot(ax - bx, ay - by);
+  battito(dt);
+
+  if (giocatore.x === uscita.x && giocatore.y === uscita.y && giocatore.p === 0 || (Math.round(ax) === uscita.x && Math.round(ay) === uscita.y)) {
+    fineLivello(); return;
+  }
+  if (stordito <= 0 && distCharun < 0.65) { preso(); return; }
+  $("hud-tempo").textContent = Math.floor(tempo);
+}
+
+function disegna(sec) {
+  ctx.drawImage(sfondo, 0, 0);
+  // Uscita: un cancello con una luce
+  const ux = uscita.x * CELLA, uy = uscita.y * CELLA;
+  ctx.fillStyle = "#3a2717"; ctx.fillRect(ux + 1, uy + 1, 2, 14); ctx.fillRect(ux + 13, uy + 1, 2, 14);
+  ctx.fillStyle = "#555"; for (let i = 4; i < 13; i += 3) ctx.fillRect(ux + i, uy + 3, 1, 12);
+  ctx.fillRect(ux + 1, uy + 3, 14, 1);
+  // Lanterne
+  for (const l of lanterne) disegnaSprite(SPRITE.lanterna, l.x * CELLA, l.y * CELLA + Math.sin(sec * 4) * 1);
+  // Personaggi
+  const [ax, ay] = posizione(giocatore), [bx, by] = posizione(charun);
+  disegnaSprite(SPRITE.giocatore, ax * CELLA, ay * CELLA);
+  const sfarfalla = stordito > 0 && Math.floor(sec * 10) % 2 === 0;
+  disegnaSprite(SPRITE.charun, bx * CELLA, by * CELLA, sfarfalla ? "#d8d8d8" : null);
+
+  // Buio: si vede solo intorno a te
+  const raggio = (5.2 - (livello - 1) * 0.35 + lampo * 6) * CELLA;
+  const cx = ax * CELLA + 8, cy = ay * CELLA + 8;
+  const grad = ctx.createRadialGradient(cx, cy, raggio * 0.35, cx, cy, raggio);
+  grad.addColorStop(0, "rgba(0,0,0,0)");
+  grad.addColorStop(1, "rgba(0,0,0,0.97)");
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Nel buio si vedono comunque gli occhi di Charun, la luce del cancello e le lanterne
+  if (stordito <= 0) {
+    ctx.fillStyle = "#ff2a2a";
+    ctx.fillRect(Math.round(bx * CELLA + 2), Math.round(by * CELLA + 2), 2, 2);
+    ctx.fillRect(Math.round(bx * CELLA + 6), Math.round(by * CELLA + 2), 2, 2);
+  }
+  ctx.globalAlpha = 0.5 + Math.sin(sec * 3) * 0.2;
+  ctx.fillStyle = "#d9a441"; ctx.fillRect(ux + 6, uy + 6, 4, 4);
+  ctx.globalAlpha = 0.3 + Math.sin(sec * 5) * 0.15;
+  for (const l of lanterne) { ctx.fillStyle = "#fff2b0"; ctx.fillRect(l.x * CELLA + 7, l.y * CELLA + 8, 2, 2); }
+  ctx.globalAlpha = 1;
+
+  // Lampo di luce
+  if (lampo > 0) { ctx.fillStyle = `rgba(255,245,200,${lampo * 0.55})`; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+  // Bordo rosso quando Charun è vicino
+  if (stato === "gioco" && stordito <= 0 && distCharun < 4) {
+    ctx.strokeStyle = `rgba(163,38,42,${(4 - distCharun) / 4 * (0.6 + Math.sin(sec * 12) * 0.3)})`;
+    ctx.lineWidth = 6; ctx.strokeRect(3, 3, canvas.width - 6, canvas.height - 6);
+  }
+}
+
+/* ---------- Schermate ---------- */
+function velo(titolo, testo, pulsante, azione, comandi = "") {
+  $("velo-titolo").innerHTML = titolo;
+  $("velo-testo").innerHTML = testo;
+  $("velo-comandi").innerHTML = comandi;
+  const b = $("velo-pulsante");
+  b.textContent = pulsante; b.onclick = azione;
+  $("velo").hidden = false;
+  b.focus();
+}
+function nascondiVelo() { $("velo").hidden = true; }
+
+function nuovaPartita() {
+  livello = 1; cariche = 0; tempo = 0;
+  sbloccaAudio();
+  preparaLivello(); nascondiVelo(); stato = "gioco";
+}
+function fineLivello() {
+  stato = "fermo"; suono("uscita");
+  if (livello >= LIVELLI) {
+    velo(TESTI.vittoriaTitolo, `${TESTI.vittoriaTesto}<br><br>TEMPO: ${Math.floor(tempo)} SECONDI`, TESTI.rigioca, nuovaPartita);
+    return;
+  }
+  velo(TESTI.livelloSuperato, TESTI.prossimoLivello, TESTI.continua, () => {
+    livello++; preparaLivello(); nascondiVelo(); stato = "gioco";
+  });
+}
+function preso() {
+  stato = "fermo"; suono("preso");
+  velo(`<span class="lampeggia">${TESTI.presoTitolo}</span>`, `${TESTI.presoTesto}<br><br>LIVELLO ${livello}`, TESTI.riprova, () => {
+    cariche = 0; preparaLivello(); nascondiVelo(); stato = "gioco";
+  });
+}
+function pausa() {
+  if (stato === "gioco") { stato = "pausa"; velo(TESTI.pausa, "", TESTI.continua, () => { nascondiVelo(); stato = "gioco"; }); }
+}
+
+/* ---------- Audio retrò ---------- */
+let audio = null, audioAttivo = true, prossimoBattito = 0;
+function sbloccaAudio() {
+  if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (audio && audio.state === "suspended") audio.resume();
+}
+function nota(freq, durata, tipo = "square", volume = 0.08, ritardo = 0) {
+  if (!audio || !audioAttivo) return;
+  const t = audio.currentTime + ritardo;
+  const o = audio.createOscillator(), g = audio.createGain();
+  o.type = tipo; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(volume, t); g.gain.exponentialRampToValueAtTime(0.0001, t + durata);
+  o.connect(g).connect(audio.destination); o.start(t); o.stop(t + durata);
+}
+function suono(tipo) {
+  if (tipo === "lanterna") { nota(660, 0.08); nota(990, 0.12, "square", 0.08, 0.08); }
+  if (tipo === "lampo") { nota(1200, 0.25, "sawtooth", 0.06); nota(400, 0.4, "triangle", 0.1, 0.05); }
+  if (tipo === "uscita") { [523, 659, 784, 1046].forEach((f, i) => nota(f, 0.14, "square", 0.07, i * 0.1)); }
+  if (tipo === "preso") { [300, 220, 150, 90].forEach((f, i) => nota(f, 0.25, "sawtooth", 0.09, i * 0.15)); }
+}
+function battito(dt) {
+  if (stordito > 0 || distCharun > 9) { prossimoBattito = 0; return; }
+  prossimoBattito -= dt;
+  if (prossimoBattito <= 0) {
+    nota(60, 0.15, "sine", 0.35); nota(52, 0.15, "sine", 0.28, 0.17);
+    prossimoBattito = 0.35 + distCharun * 0.1;
+  }
+}
+$("audio").onclick = () => {
+  audioAttivo = !audioAttivo;
+  $("audio").textContent = audioAttivo ? "♪ AUDIO: SÌ" : "♪ AUDIO: NO";
+};
+
+/* ---------- Comandi ---------- */
+const TASTI = { ArrowUp: "su", ArrowDown: "giu", ArrowLeft: "sx", ArrowRight: "dx", w: "su", s: "giu", a: "sx", d: "dx", W: "su", S: "giu", A: "sx", D: "dx" };
+document.addEventListener("keydown", e => {
+  if (TASTI[e.key]) { e.preventDefault(); cambiaDirezione(TASTI[e.key]); }
+  else if (e.key === " ") { e.preventDefault(); usaLampo(); }
+  else if (e.key === "p" || e.key === "P" || e.key === "Escape") { pausa(); }
+  else if (e.key === "Enter" && !$("velo").hidden) { e.preventDefault(); $("velo-pulsante").click(); }
+});
+document.querySelectorAll(".croce button").forEach(b => {
+  b.addEventListener("pointerdown", e => { e.preventDefault(); cambiaDirezione(b.dataset.dir); });
+});
+$("pulsante-lampo").addEventListener("pointerdown", e => { e.preventDefault(); usaLampo(); });
+// Scorrimento del dito sullo schermo di gioco
+let tocco = null;
+canvas.addEventListener("touchstart", e => { tocco = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });
+canvas.addEventListener("touchmove", e => {
+  if (!tocco) return;
+  e.preventDefault();
+  const dx = e.touches[0].clientX - tocco[0], dy = e.touches[0].clientY - tocco[1];
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+  cambiaDirezione(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "dx" : "sx") : (dy > 0 ? "giu" : "su"));
+  tocco = [e.touches[0].clientX, e.touches[0].clientY];
+}, { passive: false });
+document.addEventListener("visibilitychange", () => { if (document.hidden) pausa(); });
+
+/* ---------- Avvio ---------- */
+livello = 1; cariche = 0; tempo = 0;
+preparaLivello(); stato = "fermo";
+$("messaggio").textContent = "";
+const touch = matchMedia("(pointer: coarse)").matches;
+velo(TESTI.titolo, `${TESTI.introduzione}<br><br>${TESTI.lanterna}`, TESTI.inizia, nuovaPartita,
+  touch ? TESTI.comandiTouch : TESTI.comandiTastiera);
+requestAnimationFrame(ciclo);
+</script>
+</body>
+</html>
